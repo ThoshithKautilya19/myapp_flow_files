@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".payment_log_logic"
+    android:background="@drawable/box_1"
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pay_log_rv"
+        android:layout_width="410dp"
+        android:layout_height="649dp"
+        android:layout_marginBottom="8dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/bot_nav_bg"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bottom_nav_box" />
+
+    <ImageView
+        android:id="@+id/bit_nav_div1"
+        android:layout_width="1dp"
+        android:layout_height="51dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.319"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/bit_nav_div2"
+        android:layout_width="1dp"
+        android:layout_height="51dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/change_but"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:backgroundTint="#6207f8"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.093"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/baseline_replay_24" />
+
+    <ImageButton
+        android:id="@+id/home_but"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:backgroundTint="#6207f8"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/baseline_home_24" />
+
+    <ImageButton
+        android:id="@+id/log_but"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:backgroundTint="#6207f8"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/baseline_access_time_24" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="415dp"
+        android:layout_height="77dp"
+        android:fontFamily="sans-serif-condensed"
+        android:padding="5dp"
+        android:text="History"
+        android:textAlignment="center"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toTopOf="@+id/pay_log_rv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.92"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

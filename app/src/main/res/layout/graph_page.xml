@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".Graph"
+    android:background="@drawable/box_1"
+    >
+
+    <ImageView
+        android:id="@+id/app_logo_bg"
+        android:layout_width="589dp"
+        android:layout_height="516dp"
+        android:alpha="0.04"
+        app:srcCompat="@drawable/moneytracker_neww"
+        tools:layout_editor_absoluteX="-89dp"
+        tools:layout_editor_absoluteY="41dp" />
+
+    <TextView
+        android:id="@+id/instr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:text="Welcome to MoneyTracker! A basic yet essential money tracking app. Start right off by mentioning the SMS address from which you get your payment SMSs."
+        android:textAlignment="center"
+        android:textColor="#FFEB3B"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.046" />
+
+    <EditText
+        android:id="@+id/add_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Ex. &quot;AD-ICICIT&quot;"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instr"
+        app:layout_constraintVertical_bias="0.137" />
+
+    <Button
+        android:id="@+id/sub_add_but"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start tracking"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_input"
+        app:layout_constraintVertical_bias="0.316" />
+
+    <ImageView
+        android:id="@+id/bot_nav_bg"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bottom_nav_box" />
+
+    <ImageView
+        android:id="@+id/bit_nav_div1"
+        android:layout_width="1dp"
+        android:layout_height="51dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.673"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/bit_nav_div2"
+        android:layout_width="1dp"
+        android:layout_height="51dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.334"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/change_but"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:backgroundTint="#6207f8"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.144"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/baseline_replay_24" />
+
+    <ImageButton
+        android:id="@+id/home_but"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:backgroundTint="#6207f8"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/baseline_home_24" />
+
+    <ImageButton
+        android:id="@+id/log_but"
+        android:layout_width="58dp"
+        android:layout_height="51dp"
+        android:backgroundTint="#6207f8"
+        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.861"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bot_nav_bg"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/baseline_access_time_24" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
