@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bank_names">dropDownMenubanknames</string>
+    <string-array name="banks">
+        <item>Select a Bank</item>
+        <item>ICICI</item>
+        <item>IDBI</item>
+        <item>KOTAKB</item>
+        <item>SBI</item>
+    </string-array>
+</resources>

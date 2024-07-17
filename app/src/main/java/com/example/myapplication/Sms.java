@@ -10,7 +10,7 @@ public class Sms implements Serializable {
     private String _msg;
     private String _readState; //"0" for have not read sms and "1" for have read sms
 
-    private Integer _time;
+    private long _time;
     private String _folderName;
 
     public String getId(){
@@ -25,7 +25,7 @@ public class Sms implements Serializable {
     public String getReadState(){
         return _readState;
     }
-    public Integer getTime(){
+    public long getTime(){
         return _time;
     }
     public String getFolderName(){
@@ -45,7 +45,7 @@ public class Sms implements Serializable {
     public void setReadState(String readState){
         _readState = readState;
     }
-    public void setTime(Integer time){
+    public void setTime(long time){
         _time = time;
     }
     public void setFolderName(String folderName){

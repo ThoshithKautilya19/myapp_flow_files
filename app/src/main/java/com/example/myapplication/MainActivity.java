@@ -45,6 +45,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    TextView prog_disp, tv3;
+    TextView prog_disp, tv3,tot_head;
     Button calc_but;
     ImageButton hom_but, chang_but, log_but,go_prev_month,go_next_month;
     BarChart barChart;
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize views
         tv3 = findViewById(R.id.tot_amt_disp);
         prog_disp = findViewById(R.id.prog);
-        calc_but = findViewById(R.id.calculate_but);
+        tot_head=findViewById(R.id.tot_head);
         hom_but = findViewById(R.id.home_but);
         chang_but = findViewById(R.id.change_but);
         log_but = findViewById(R.id.log_but);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        List<String> months_list = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+        List<String> months_list = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec");
         List<Integer> int_list = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
 // Initialising dicts for reference to prev and next months
@@ -110,10 +111,11 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         ArrayList<String> sms_add = new ArrayList<>();
         if (bundle != null && bundle.size() != 0) {
-            Log.e("TAG", " Nigga");
             sms_add = (ArrayList<String>) bundle.get("addr");
+            System.out.println(sms_add);
             if(sms_add==null){
                 sms_add=(ArrayList<String>) bundle.get("sms_adds_back");
+                System.out.println(sms_add);
             }
         }
 
@@ -122,7 +124,10 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
         String formattedDate = df.format(c);
         ArrayList<String> CDL = new ArrayList<>(Arrays.asList(formattedDate.split("-")));
+        Log.e("TAG", String.valueOf(CDL));
         CDL.set(2, CDL.get(2).substring(2));
+        Log.e("TAG", String.valueOf(CDL));
+
 
         // Start the FetchSmsTask in a new thread
         curr_month_int[0]=dict_mon_to_int.get(CDL.get(1));
@@ -130,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.e("TAG",String.valueOf(curr_month_int[0]));
 
-        new Thread(new FetchSmsTask(sms_add,CDL.get(1),CDL.get(2),false)).start();
+        new Thread(new FetchSmsTasknew(sms_add,CDL.get(1),CDL.get(2))).start();
 
         // Set click listeners for buttons
         hom_but.setOnClickListener(v -> {
@@ -146,8 +151,9 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> finalSms_add = sms_add;
         log_but.setOnClickListener(v -> {
             Intent log_page = new Intent(MainActivity.this, payment_log_logic.class);
-            log_page.putExtra("list_sms", get_req_SMS(finalSms_add));
+            log_page.putExtra("list_sms",get_req_sms_list(finalSms_add,getAllSms()));
             log_page.putExtra("sms_adds",finalSms_add);
+            log_page.putExtra("sms_add_times",get_req_sms_date_list(finalSms_add,getAllSms()));
             startActivity(log_page);
         });
 
@@ -163,12 +169,12 @@ public class MainActivity extends AppCompatActivity {
                     String prev_month=dict_int_to_mon.get(prev_month_int);
 
                     curr_year_int[0]=curr_year_int[0]-1;
-                    new Thread(new FetchSmsTask(finalSms_add1,prev_month,String.valueOf(curr_year_int[0]),true)).start();
+                    new Thread(new FetchSmsTasknew(finalSms_add1,prev_month,String.valueOf(curr_year_int[0]))).start();
                     Log.e("TAG",String.valueOf(curr_month_int[0]));
                 }
                 else{
                     String prev_month=dict_int_to_mon.get(prev_month_int);
-                    new Thread(new FetchSmsTask(finalSms_add1,prev_month,String.valueOf(curr_year_int[0]),true)).start();
+                    new Thread(new FetchSmsTasknew(finalSms_add1,prev_month,String.valueOf(curr_year_int[0]))).start();
                     Log.e("TAG",String.valueOf(curr_month_int[0]));
                 }
 
@@ -187,12 +193,12 @@ public class MainActivity extends AppCompatActivity {
                     String prev_month=dict_int_to_mon.get(next_month_int);
 
                     curr_year_int[0]=curr_year_int[0]+1;
-                    new Thread(new FetchSmsTask(finalSms_add1,prev_month,String.valueOf(curr_year_int[0]),true)).start();
+                    new Thread(new FetchSmsTasknew(finalSms_add1,prev_month,String.valueOf(curr_year_int[0]))).start();
                     Log.e("TAG",String.valueOf(curr_month_int[0]));
                 }
                 else{
                     String next_month=dict_int_to_mon.get(next_month_int);
-                    new Thread(new FetchSmsTask(finalSms_add1,next_month,String.valueOf(curr_year_int[0]),true)).start();
+                    new Thread(new FetchSmsTasknew(finalSms_add1,next_month,String.valueOf(curr_year_int[0]))).start();
                     Log.e("TAG",String.valueOf(curr_month_int[0]));
                 }
 
@@ -220,239 +226,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    private class FetchSmsTask implements Runnable {
-        private final ArrayList<String> smsAdd;
-        private final String month;
-        private final String year;
-        private final boolean change_month;
-
-        public FetchSmsTask(ArrayList<String> smsAdd, String month, String year, boolean change_month) {
-            this.smsAdd = smsAdd;
-            this.month = month;
-            this.year = year;
-            this.change_month = change_month;
-        }
-        @Override
-        public void run() {
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
-                List<Sms> smsList = getAllSms();
-                if (!smsList.isEmpty()) {
-                    AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "payment_db")
-                            .fallbackToDestructiveMigration()
-                            .build();
-
-                    UserDao dao = db.userDao();
-                    List<BarEntry> barEntries;
-                    float sum;
-//                    if (change_month) {
-////                        barEntries = getTemporaryBarEntries(month + "_" + year);
-////                        sum = getTemporarySum(month + "_" + year);
-//                        barEntries= new ArrayList<>();
-//                        if (barEntries == null || barEntries.isEmpty()) {
-//                            barEntries = new ArrayList<>();
-//                            for (int i = 1; i <= 30; i++) {
-//                                barEntries.add(new BarEntry(i, 0));
-//                            }
-//                        }
-//
-//
-//                    } else {
-//                        barEntries= new ArrayList<>();
-//                        if (barEntries == null || barEntries.isEmpty()) {
-//                            barEntries = new ArrayList<>();
-//                            for (int i = 1; i <= 30; i++) {
-//                                barEntries.add(new BarEntry(i, 0));
-//                            }
-//                        }
-//                    }
-
-                    barEntries= new ArrayList<>();
-                        if (barEntries == null || barEntries.isEmpty()) {
-                            barEntries = new ArrayList<>();
-                            for (int i = 1; i <= 30; i++) {
-                                barEntries.add(new BarEntry(i, 0));
-                            }
-                        }
-
-                    System.out.println(barEntries);
-
-                    uiHandler.post(() -> prog_disp.setText("Calculating"));
-
-                    SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-                    boolean isFirstRun = sharedPreferences.getBoolean(FIRST_RUN, true);
-                    Log.e("TAG",String.valueOf("isFirstRun hit"));
-
-                    long lastProcessedTime = getLastProcessedTime();
-                    long maxTime = lastProcessedTime;
-                    ArrayList<String> reqAdds = new ArrayList<>();
-                    ArrayList<Integer> getTimes = new ArrayList<>();
-
-                    for (Sms sms : smsList) {
-//                        Log.e("TAG",String.valueOf(change_month));
-//                        Log.e("TAG",String.valueOf(isFirstRun));
-//                        Log.e("TAG",String.valueOf(sms.getTime()>lastProcessedTime));
-//                          Log.e("TAG",String.valueOf(smsAdd.contains(sms.getAddress())));
-//                          Log.e("TAG",smsAdd.get(0) );
-//                          Log.e("TAG",smsAdd.get(1) );
-
-//                        (change_month || isFirstRun || sms.getTime() > lastProcessedTime) &&
-                        if ( smsAdd.contains(sms.getAddress()) && sms.getMsg().contains("debited")) {
-                            reqAdds.add(sms.getMsg());
-                            getTimes.add(sms.getTime());
-                            Log.d(TAG, "Got one");
-                        }
-                    }
-
-                    Log.e("TAG",String.valueOf(!reqAdds.isEmpty()));
-                    if (!reqAdds.isEmpty()) {
-                        final double[] sumArray = {0.00};
-                        for (int k = 0; k < reqAdds.size(); k++) {
-                            String msg = reqAdds.get(k);
-                            int msgTime = getTimes.get(k);
-                            String[] msgArray = msg.split(" ");
-                            for (int i = 1; i < msgArray.length; i++) {
-                                double amount = 0;
-                                if ("on".equals(msgArray[i])) {
-                                    String wordBeforeOn = msgArray[i - 1];
-                                    String wordAfterOn = msgArray[i + 1].substring(0, msgArray[i + 1].length() - 1);
-                                    ArrayList<String> date = new ArrayList<>(Arrays.asList(wordAfterOn.split("-")));
-
-                                    if (year.equals(date.get(2)) && month.equals(date.get(1))) {
-                                        int day;
-                                        try {
-                                            day = Integer.parseInt(date.get(0));
-                                        } catch (NumberFormatException |
-                                                 IndexOutOfBoundsException e) {
-                                            Log.e(TAG, "Invalid date format in SMS: " + wordAfterOn);
-                                            continue;
-                                        }
-
-                                        try {
-                                            amount = Double.parseDouble(wordBeforeOn);
-                                        } catch (NumberFormatException e) {
-                                            ArrayList<String> four_dig_list = new ArrayList<>(Arrays.asList(wordBeforeOn.split(",")));
-                                            String four_dig = String.join("", four_dig_list);
-                                            try {
-                                                amount = Double.parseDouble(four_dig);
-                                            } catch (NumberFormatException ex) {
-                                                Log.e(TAG, "Invalid amount format in SMS: " + wordBeforeOn);
-                                                continue;
-                                            }
-                                        }
-
-                                        if (day > 0 && day <= barEntries.size()) {
-                                            BarEntry barEntry = barEntries.get(day - 1);
-                                            if (barEntry != null) {
-                                                if (barEntry.getY() != 0) {
-                                                    float old_val = barEntry.getY();
-                                                    float new_val = (float) amount + old_val;
-                                                    barEntries.set(day - 1, new BarEntry(day, new_val));
-                                                    Log.d("TAG","Same day another payment");
-                                                    System.out.println(old_val);
-                                                    System.out.println(new_val);
-                                                    System.out.println(barEntry);
-                                                } else {
-                                                    float val = (float) amount;
-                                                    barEntries.set(day - 1, new BarEntry(day, val));
-                                                    Log.d("TAG","Unique day");
-                                                    System.out.println(val);
-                                                    System.out.println(barEntry);
-                                                }
-
-                                                if (!change_month) {
-                                                    User user = new User(0, wordBeforeOn, date.get(0), date.get(1), date.get(2), msgTime);
-                                                    dao.insertrecord(user);
-                                                    maxTime = Math.max(maxTime, msgTime);
-                                                }
-                                            } else {
-                                                Log.e(TAG, "BarEntry is null for day: " + day);
-                                            }
-                                        } else {
-                                            Log.e(TAG, "Invalid day index: " + day);
-                                        }
-                                    }
-                                }
-                                sumArray[0] = sumArray[0] + amount;
-//                                Log.d("TAG","One sms completed");
-//                                System.out.println(barEntries);
-
-                            }
-
-
-                        }
-
-
-                        if (change_month) {
-                            saveTemporaryMonthData(barEntries, (float) sumArray[0], month + "_" + year);
-                            uiHandler.post(() -> tv3.setText(String.valueOf(sumArray[0])));
-                            System.out.println(barEntries);
-
-
-
-                        } else {
-                            saveBarEntries(barEntries);
-                            setLastProcessedTime(maxTime);
-                            setLastProcessedSum((float) sumArray[0]);
-                            uiHandler.post(() -> tv3.setText(String.valueOf(sumArray[0])));
-                        }
-
-                        uiHandler.post(() -> prog_disp.setText("Done"));
-                        BarDataSet barDataSet = new BarDataSet(barEntries, "Amount Spent Per Day");
-                        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-                        barDataSet.setValueTextColor(Color.WHITE);
-                        barDataSet.setValueTextSize(5f);
-
-                        BarData barData = new BarData(barDataSet);
-                        barChart.getAxisLeft().setTextColor(Color.WHITE);
-                        barChart.getAxisRight().setTextColor(Color.WHITE);
-                        barChart.getXAxis().setTextColor(Color.WHITE);
-                        barChart.getLegend().setTextColor(Color.WHITE);
-
-                        uiHandler.post(() -> {
-                            barChart.setFitBars(true);
-                            barChart.setData(barData);
-                            barChart.animateY(2000, Easing.EaseInOutCubic);
-                        });
-                    } else {
-                        Log.e(TAG, "Already done");
-                        float old_sum = getLastProcessedSum();
-
-                        uiHandler.post(() -> tv3.setText(String.valueOf(old_sum)));
-
-                        ArrayList<BarEntry> old_bar_entries = new ArrayList<>(getBarEntries());
-
-                        System.out.println(old_bar_entries);
-
-                        BarDataSet barDataSet = new BarDataSet(old_bar_entries, "Payments this month");
-                        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-                        barDataSet.setValueTextColor(Color.WHITE);
-                        barDataSet.setValueTextSize(0.05F);
-                        BarData barData = new BarData(barDataSet);
-
-                        barChart.getAxisLeft().setTextColor(Color.WHITE);
-                        barChart.getAxisRight().setTextColor(Color.WHITE);
-                        barChart.getXAxis().setTextColor(Color.WHITE);
-                        barChart.getLegend().setTextColor(Color.WHITE);
-
-                        runOnUiThread(() -> barChart.animateY(5000, Easing.EaseInOutQuad));
-
-                        barChart.setData(barData);
-                        barChart.invalidate();
-
-                        uiHandler.post(() -> prog_disp.setText("Done"));
-
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean(FIRST_RUN, false);
-                        editor.apply();
-                    }
-                }
-            }
-        }
-    }
-
-
-
     public List<Sms> getAllSms() {
         List<Sms> smsList = new ArrayList<>();
         ContentResolver contentResolver = getContentResolver();
@@ -465,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     sms.setAddress(cursor.getString(cursor.getColumnIndex("address")));
                     sms.setMsg(cursor.getString(cursor.getColumnIndex("body")));
                     sms.setReadState(cursor.getString(cursor.getColumnIndex("read")));
-                    sms.setTime(cursor.getInt(cursor.getColumnIndex("date")));
+                    sms.setTime(cursor.getLong(cursor.getColumnIndex("date")));
                     String folderName = cursor.getString(cursor.getColumnIndex("type")).contains("1") ? "inbox" : "sent";
                     sms.setFolderName(folderName);
                     smsList.add(sms);
@@ -506,177 +279,335 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void saveBarEntries(List<BarEntry> barEntries) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(barEntries);
-        editor.putString("barEntries", json);
-        editor.apply();
-    }
 
 
+    //New functions added--> WRT Dropdown
+    public ArrayList<Sms> get_req_sms_list(ArrayList<String> received_bank_names, List<Sms> all_sms_list){
+        ArrayList<Sms> req_sms_list = new ArrayList<>();
+        boolean matchFound = false;
 
+        Log.e("TAG", "Number of SMS in all_sms_list: " + all_sms_list.size());
+        Log.e("TAG", "Number of received bank names: " + received_bank_names.size());
 
-    private List<BarEntry> getBarEntries() {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("barEntries", "");
-        Type type = new TypeToken<List<BarEntry>>() {}.getType();
-        List<BarEntry> barEntries = gson.fromJson(json, type);
+        for(int i = 0; i < all_sms_list.size(); i++){
+            Sms sms = all_sms_list.get(i);
+            Log.e("TAG", "Processing SMS " + (i + 1) + ": " + sms.getAddress());
 
-        // Check if barEntries is null and initialize if necessary
-        if (barEntries == null) {
-            barEntries = new ArrayList<>();
-            for (int i = 1; i <= 31; i++) {
-                barEntries.add(new BarEntry(i, 0));
-            }
-        }
+            for(int j = 0; j < received_bank_names.size(); j++){
+                String Bank = received_bank_names.get(j);
+                Log.e("TAG", "Checking bank " + (j + 1) + ": " + Bank);
 
-        return barEntries;
-    }
-
-
-    public ArrayList<Sms> get_req_SMS(ArrayList<String> req_sms_add) {
-        ArrayList<Sms> req_sms_list = new ArrayList<Sms>();
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
-            List<Sms> smsList = getAllSms();
-            if (!smsList.isEmpty()) {
-
-
-                //Initialising lists for storage
-                ArrayList<String> reqAdds = new ArrayList<>();
-                ArrayList<Integer> getTimes = new ArrayList<>();
-
-                //Lokking for required SMS only
-                for (Sms sms : smsList) {
-                    if (req_sms_add.contains(sms.getAddress()) & sms.getMsg().contains("debited")) {// Enter the address how you get you payment messages
-                        reqAdds.add(sms.getMsg());
-                        getTimes.add(sms.getTime());
-                        req_sms_list.add(sms);
+                if(sms.getAddress().contains(Bank) && sms.getMsg().contains("debited")){
+                    Log.e("TAG","This bank is present: " + Bank);
+                    if(sms.getMsg().contains("requested")){
+                        continue;
                     }
+                    else{
+                        req_sms_list.add(sms);
+                        matchFound = true;
+                        // You may want to break here if you only need one match per SMS
+                        break;
+                    }
+                } else {
+                    Log.e("TAG","No matches found for this bank: BRUH" + Bank);
                 }
             }
-        } else {
-            uiHandler.post(() -> Toast.makeText(MainActivity.this, "SMS permission not granted.", Toast.LENGTH_SHORT).show());
-            Log.e(TAG, "SMS permission not granted.");
-            requestSmsPermission();
+
+            if(!matchFound) {
+                Log.e("TAG","No matches found at all for SMS: BRUH" + sms.getAddress());
+            }
+            matchFound = false; // Reset for the next SMS
         }
+
         return req_sms_list;
     }
 
 
-    public static ArrayList<BarEntry> make_bar_entries_for_new_month() {
-        ArrayList<BarEntry> barEntries;
-        barEntries = new ArrayList<>();
-        for (int i = 1; i <= 31; i++) {
-            barEntries.add(new BarEntry(i, 0));
-        }
+    public ArrayList<ArrayList<String>> get_req_sms_date_list(ArrayList<String> received_bank_names,List<Sms> all_sms_list){
+        ArrayList<ArrayList<String>> req_sms_list_times= new ArrayList<>();
+        for(Sms sms: all_sms_list){
+            for(String Bank:received_bank_names){
+                if(sms.getAddress().contains(Bank) & sms.getMsg().contains("debited")) {
+                    Log.e("TAG", "This bank is present :" + Bank);
+                    long sms_time = sms.getTime();
+//                    System.out.println(sms_time);
+                    //Milliseconds to date function
+                    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                    String formattedDate = df.format(sms_time);
+                    ArrayList<String> sms_date_list = new ArrayList<>(Arrays.asList(formattedDate.split("-")));
+//                    System.out.println(sms_date_list);
 
-        return  barEntries;
-    }
 
-    public double get_sms_total(List<String> reqAdds,List<Integer> getTimes,String month, String year, List<BarEntry> barEntries){
-        final double[] sum = {0.00};
-        for (int k = 0; k < reqAdds.size(); k++) {
-            String msg = reqAdds.get(k);
-            int msgTime = getTimes.get(k);
-            String[] msgArray = msg.split(" ");
-            for (int i = 1; i < msgArray.length; i++) {
-                if ("on".equals(msgArray[i])) {
-                    String wordBeforeOn = msgArray[i - 1];
-                    String wordAfterOn = msgArray[i + 1].substring(0, msgArray[i + 1].length() - 1);
-                    ArrayList<String> date = new ArrayList<>(Arrays.asList(wordAfterOn.split("-")));
-                    Log.e("TAG",date.get(1));
+//                    sms_date_list.set(2, sms_date_list.get(2).substring(2)); TO TAKE THE LAST 2 NUMBERS IMPPPPPPPPPPPPPP
 
-                    if (year.equals(date.get(2)) && month.equals(date.get(1))) {
-                        try {
-                            sum[0] += Double.parseDouble(wordBeforeOn);
-                            Log.d(TAG, String.valueOf(sum[0]));
-                        } catch (NumberFormatException e) {
-                            ArrayList<String> four_dig_list = new ArrayList<>(Arrays.asList(wordBeforeOn.split(",")));
-                            String four_dig = String.join("", four_dig_list);
-                            sum[0] += Double.parseDouble(four_dig);
-                        }
+                    req_sms_list_times.add(sms_date_list);
+                }
+                else{
+//                    Log.e("TAG","No matches found for this bank LOL:"+Bank);
 
-                        if (barEntries.get(Integer.parseInt(date.get(0))).getY() != 0) {
-                            float old_val = barEntries.get(Integer.parseInt(date.get(0))).getY();
-                            double to_add = Double.parseDouble(wordBeforeOn);
-                            float new_val = (float) to_add + old_val;
-                            barEntries.set(Integer.parseInt(date.get(0)), new BarEntry(Integer.parseInt(date.get(0)), new_val));
-                        } else {
-                            float val = (float) Double.parseDouble(wordBeforeOn);
-                            barEntries.set(Integer.parseInt(date.get(0)), new BarEntry(Integer.parseInt(date.get(0)), val));
-                        }
-                    }
                 }
             }
+//            Log.e("TAG","No matches found at all LOL" +received_bank_names);
         }
-        return sum[0];
 
+        return  req_sms_list_times;
     }
 
-    public List<BarEntry> getBarEntries(List<String> reqAdds, List<Integer> getTimes, String month, String year, List<BarEntry> barEntries) {
-        for (int k = 0; k < reqAdds.size(); k++) {
-            String msg = reqAdds.get(k);
-            int msgTime = getTimes.get(k);
-            String[] msgArray = msg.split(" ");
+    public double getSum(String Bank, String bank_msg) {
+        // Initialize total sum
+        double tot_sum = 0.00;
 
-            for (int i = 1; i < msgArray.length; i++) {
-                if ("on".equals(msgArray[i])) {
-                    String wordBeforeOn = msgArray[i - 1];
-                    String wordAfterOn = msgArray[i + 1].substring(0, msgArray[i + 1].length() - 1);
-                    String[] date = wordAfterOn.split("-");
+        // Split bank_msg into parts
+        String[] parts = bank_msg.split(" ");
+        ArrayList<String> bank_msg_list = new ArrayList<>(Arrays.asList(parts));
 
-                    if (date.length == 3 && year.equals(date[2]) && month.equals(date[1])) {
-                        int day = Integer.parseInt(date[0]);
-                        float valueToAdd = Float.parseFloat(wordBeforeOn);
+        // Process each bank's specific logic
+        if (Objects.equals(Bank, "ICICI")) {
+            // ICICI bank processing
+            // Example logic: look for "on" and extract amount
+            int index_of_on = bank_msg_list.indexOf("on");
+            if (index_of_on != -1 && index_of_on > 0 && index_of_on < bank_msg_list.size()) {
+                String word_before_on = bank_msg_list.get(index_of_on - 1);
+                try {
+                    double curr_val = Double.parseDouble(word_before_on.replace(",", ""));
+                    tot_sum += curr_val;
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Invalid amount format in ICICI SMS: " + word_before_on);
+                }
+                // Return total sum for ICICI and exit the method
+                return tot_sum;
+            } else {
+                Log.e(TAG, "Index of 'on' not found or out of bounds in ICICI SMS: " + index_of_on);
+            }
+        } else if (Objects.equals(Bank, "IDBI")) {
+            // IDBI bank processing
+            // Example logic: look for "INR." or "Rs" and extract amount
+            int index_of_key = bank_msg_list.indexOf("INR.");
+            if (index_of_key == -1) {
+                index_of_key = bank_msg_list.indexOf("Rs");
+            }
+            if (index_of_key != -1 && index_of_key + 1 < bank_msg_list.size()) {
+                String word_after_key = bank_msg_list.get(index_of_key + 1);
+                try {
+                    double curr_val = Double.parseDouble(word_after_key.replace(",", ""));
+                    tot_sum += curr_val;
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Invalid amount format in IDBI SMS: " + word_after_key);
+                }
+                // Return total sum for IDBI and exit the method
+                return tot_sum;
+            } else {
+                Log.e(TAG, "Index of 'INR.' or 'Rs' not found or out of bounds in IDBI SMS: " + index_of_key);
+            }
+        } else if (Objects.equals(Bank, "SBI")) {
+            // SBI bank processing
+            // Example logic: look for "on" and extract amount
+            int index_of_on = bank_msg_list.indexOf("on");
+            if (index_of_on != -1 && index_of_on > 0 && index_of_on < bank_msg_list.size()) {
+                String word_before_on = bank_msg_list.get(index_of_on - 1);
+                try {
+                    double curr_val = Double.parseDouble(word_before_on.replace(",", ""));
+                    tot_sum += curr_val;
+                } catch (NumberFormatException e) {
+                    Log.e(TAG, "Invalid amount format in SBI SMS: " + word_before_on);
+                }
+                // Return total sum for SBI and exit the method
+                return tot_sum;
+            } else {
+                Log.e(TAG, "Index of 'on' not found or out of bounds in SBI SMS: " + index_of_on);
+            }
+        } else if (Objects.equals(Bank, "KOTAKB")) {
 
-                        if (day < barEntries.size()) {
-                            BarEntry existingEntry = barEntries.get(day);
-                            float updatedValue = existingEntry.getY() + valueToAdd;
-                            barEntries.set(day, new BarEntry(day, updatedValue));
-                        } else {
-                            barEntries.add(new BarEntry(day, valueToAdd));
+            //Getting index of INR
+            int index_of_inr= bank_msg_list.indexOf("INR");
+            if (index_of_inr==-1){
+                index_of_inr=bank_msg_list.indexOf("Rs");
+            }
+            if (index_of_inr != -1 && index_of_inr > 0 && index_of_inr < bank_msg_list.size()) {
+                String word_after_inr = bank_msg_list.get(index_of_inr + 1);
+                try {
+                    double curr_val = Double.parseDouble(word_after_inr.replace(",", ""));
+                    tot_sum += curr_val;
+                } catch (NumberFormatException e) {
+                    Log.e("TAG", "Invalid amount format in SBI SMS: " + word_after_inr);
+                }
+                // Return total sum for KOTAKB and exit the method
+                return tot_sum;
+            } else {
+                Log.e("TAG", "Index of 'on' not found or out of bounds in SBI SMS: " + index_of_inr);
+            }
+        } else {
+            // Handle unsupported banks
+            Log.e(TAG, "This bank is not supported yet: " + Bank);
+            uiHandler.post(()-> Toast.makeText(MainActivity.this, "This bank is not supported yet: "+Bank,Toast.LENGTH_SHORT).show());
+        }
+
+        // Return total sum if bank was processed successfully, otherwise 0.00
+        return tot_sum;
+    }
+
+
+
+    private class FetchSmsTasknew implements Runnable {
+        private final ArrayList<String> Banks_to_get;
+        private final String month;
+        private final String year;
+
+        private FetchSmsTasknew(ArrayList<String> Banks_to_get, String month, String year) {
+            this.Banks_to_get = Banks_to_get;
+            this.month = month;
+            this.year = year;
+        }
+
+        @Override
+        public void run() {
+            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_SMS) == PackageManager.PERMISSION_GRANTED) {
+                List<Sms> smsList = getAllSms();
+                Log.e("TAG", String.valueOf(smsList.size()));
+
+                if (!smsList.isEmpty()) {
+                    System.out.println("All sms list is not empty");
+                    AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "payment_db")
+                            .fallbackToDestructiveMigration()
+                            .build();
+                    UserDao dao = db.userDao();
+
+                    System.out.println("Barentries initialized");
+                    List<BarEntry> barEntries = new ArrayList<>();
+
+
+                    for (int i = 1; i <= 31; i++) {
+                        barEntries.add(new BarEntry(i, 0));
+                    }
+
+                    System.out.println(barEntries);
+                    System.out.println("These are the Barentries and they all should be empty for now");
+                    uiHandler.post(() -> prog_disp.setText("Calculating"));
+
+//                    SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+//                    boolean isFirstRun = sharedPreferences.getBoolean(FIRST_RUN, true);
+//                    Log.e("TAG", "isFirstRun hit");
+//
+//                    long lastProcessedTime = getLastProcessedTime();
+//                    long maxTime = lastProcessedTime;
+
+                    System.out.println("Getting the required sms messages");
+                    ArrayList<Sms> reqAdds = get_req_sms_list(Banks_to_get, smsList);
+                    System.out.println(reqAdds);
+                    System.out.println("Getting the required message dates");
+//                    ArrayList<ArrayList<String>> getTimes = get_req_sms_date_list(Banks_to_get, smsList);
+                    System.out.println("Checking if both are of the same size or not");
+//                    System.out.println(reqAdds.size() == getTimes.size());
+
+
+
+                    Log.e("TAG", String.valueOf(!reqAdds.isEmpty()));
+                    if (!reqAdds.isEmpty()) {
+                        System.out.println("The required sms messages are not empty, hence there are banks provided in the bank_list");
+                        final double[] sumArray = {0.00};
+
+                        for (int k = 0; k < reqAdds.size(); k++) {
+                            System.out.println("Started going through SMS");
+                            double perSMSamount = 0.00;
+
+                            System.out.println("SMS Date and Message initialized");
+                            String msg = reqAdds.get(k).getMsg();
+                            double time = reqAdds.get(k).getTime();
+
+                            System.out.println("This is the sender's addresss" +reqAdds.get(k).getAddress());
+
+
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                            String formattedDate = df.format(time);
+                            ArrayList<String> msgTime = new ArrayList<>(Arrays.asList(formattedDate.split("-")));
+
+
+                            for (String bank : Banks_to_get) {
+                                double curr_amount = getSum(bank, msg);
+                                if (curr_amount > 0 ) {
+                                    perSMSamount = curr_amount;
+                                    System.out.println();
+                                    System.out.println(curr_amount);
+                                    if(curr_amount>40000){
+                                        System.out.println(msgTime);
+                                    }
+                                    break;
+                                }
+                            }
+
+                            System.out.println("This SMSs total " + perSMSamount);
+
+                            int day = Integer.parseInt(msgTime.get(0));
+                            System.out.println("This is the date of the message");
+                            System.out.println(msgTime);
+
+
+
+                            if (Objects.equals(year, msgTime.get(2).substring(2)) && Objects.equals(month, msgTime.get(1))) {
+                                Log.d("TAG", "Setting BarEntries for this SMS");
+                                BarEntry barEntry = barEntries.get(day - 1);
+                                if (barEntry != null) {
+                                    System.out.println("This bar Entry is already populated with :"+barEntry.getY());
+                                    float old_val = barEntry.getY();
+                                    float new_val = (float) perSMSamount + old_val;
+                                    barEntries.set(day - 1, new BarEntry(day, new_val));
+                                    Log.d("TAG", "Updated bar entry for day " + day);
+                                    System.out.println("Old val :" + old_val);
+                                    System.out.println("New val " + new_val);
+                                    sumArray[0] += perSMSamount;
+                                    System.out.println("Total till now: " + sumArray[0]);
+                                }
+                                else{
+                                    System.out.println("This barENTRY is going to get its new value");
+                                    float val_to_add = (float) perSMSamount;
+                                    barEntries.set(day-1,new BarEntry(day,val_to_add));
+                                    Log.d("TAG", "Updated bar entry for day " + day);
+                                    System.out.println("val_added :" + val_to_add);
+                                    sumArray[0] += perSMSamount;
+                                    System.out.println("Total till now: " + sumArray[0]);
+                                }
+
+                            }
                         }
+
+                        System.out.println("All required SMSs read, now we are making the graph");
+
+                        uiHandler.post(() -> prog_disp.setText("Done"));
+                        BarDataSet barDataSet = new BarDataSet(barEntries, "Amount Spent Per Day");
+                        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+                        barDataSet.setValueTextColor(Color.WHITE);
+                        barDataSet.setValueTextSize(5f);
+
+                        BarData barData = new BarData(barDataSet);
+                        barChart.getAxisLeft().setTextColor(Color.WHITE);
+                        barChart.getAxisRight().setTextColor(Color.WHITE);
+                        barChart.getXAxis().setTextColor(Color.WHITE);
+                        barChart.getLegend().setTextColor(Color.WHITE);
+
+                        uiHandler.post(() -> {
+                            barChart.setFitBars(true);
+                            barChart.setData(barData);
+                            barChart.animateY(2000, Easing.EaseInOutCubic);
+                            tv3.setText(Double.toString(sumArray[0]));
+                            tot_head.setText("Spending in "+month+" "+year);
+                        });
+
+                    } else {
+                        Log.e("TAG", "No such messages found from the banks mentioned in the list " + Banks_to_get);
+                        uiHandler.post(()->Toast.makeText(MainActivity.this,"No such messages found from the banks mentioned in the list",Toast.LENGTH_SHORT).show());
+
                     }
                 }
+
+            }
+            else {
+                uiHandler.post(() -> Toast.makeText(MainActivity.this, "No SMS could be pulled. Please check your permissions.", Toast.LENGTH_SHORT).show());
             }
         }
-        return barEntries;
     }
 
-    private void saveTemporaryMonthData(List<BarEntry> barEntries, float sum, String keyPrefix) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(barEntries);
-        editor.putString(keyPrefix + "_barEntries", json);
-        editor.putFloat(keyPrefix + "_sum", sum);
-        editor.apply();
-    }
 
-    private List<BarEntry> getTemporaryBarEntries(String keyPrefix) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString(keyPrefix + "_barEntries", "");
-        Type type = new TypeToken<List<BarEntry>>() {}.getType();
-        List<BarEntry> barEntries = gson.fromJson(json, type);
 
-        if (barEntries == null) {
-            barEntries = new ArrayList<>();
-            for (int i = 1; i <= 31; i++) {
-                barEntries.add(new BarEntry(i, 0));
-            }
-        }
-
-        return barEntries;
-    }
-
-    private float getTemporarySum(String keyPrefix) {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        return sharedPreferences.getFloat(keyPrefix + "_sum", 0.0f);
-    }
 
 
 
