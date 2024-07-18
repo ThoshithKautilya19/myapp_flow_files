@@ -13,8 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.data.BarEntry;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class payment_log_logic extends AppCompatActivity {
@@ -32,23 +36,58 @@ public class payment_log_logic extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_logs);
 
-        Bundle bundle_mp_lp= getIntent().getExtras();
-        if (!bundle_mp_lp.isEmpty()) {
-            sms_List = (ArrayList<Sms>) bundle_mp_lp.get("list_sms");
-            req_sms_add=(ArrayList<String>) bundle_mp_lp.get("sms_adds");
-            req_sms_add_times= (ArrayList<ArrayList<String>>) bundle_mp_lp.get("sms_add_times");
+//        OLD CODE
+
+//        Bundle bundle_mp_lp= getIntent().getExtras();
+//        if (!bundle_mp_lp.isEmpty()) {
+//            sms_List = (ArrayList<Sms>) bundle_mp_lp.get("list_sms");
+//            req_sms_add=(ArrayList<String>) bundle_mp_lp.get("sms_adds");
+//        }
+//
+//        try {
+//            ArrayList<pay_log_struct> made_dataset = make_pay_dataset(sms_List, req_sms_add);
+//            // Initializing RecyclerView
+//            RecyclerView pay_logs = findViewById(R.id.pay_log_rv);
+//
+//            // Setting up the RecyclerView with a layout manager and adapter
+//            pay_logs.setLayoutManager(new LinearLayoutManager(this));
+//            Pay_log_RV_Adapter prvAdapter = new Pay_log_RV_Adapter(this, made_dataset);
+//            pay_logs.setAdapter(prvAdapter);
+//        }
+//        catch (Exception e){
+//            Intent lp_to_gp = new Intent(payment_log_logic.this, Graph.class);
+//            Toast.makeText(this,"Too many messages to processs. Kindly excuse us",Toast.LENGTH_SHORT).show();
+//            startActivity(lp_to_gp);
+//
+//        }
+
+        //new testing code
+
+        ExtendedDataHolder big_data = ExtendedDataHolder.getInstance();
+        if(big_data.hasExtra("list_sms") & big_data.hasExtra("sms_adds")){
+            sms_List = (ArrayList<Sms>) big_data.getExtra("list_sms");
+            req_sms_add=(ArrayList<String>) big_data.getExtra("sms_adds");
+//            req_sms_add=(ArrayList<String>) bundle_mp_lp.get("sms_adds");
+            if(sms_List!=null & req_sms_add!=null){
+                ArrayList<pay_log_struct> made_dataset = make_pay_dataset(sms_List, req_sms_add);
+                // Initializing RecyclerView
+                RecyclerView pay_logs = findViewById(R.id.pay_log_rv);
+
+                // Setting up the RecyclerView with a layout manager and adapter
+                pay_logs.setLayoutManager(new LinearLayoutManager(this));
+                Pay_log_RV_Adapter prvAdapter = new Pay_log_RV_Adapter(this, made_dataset);
+                pay_logs.setAdapter(prvAdapter);
+            }
+            else{
+                Log.e("TAG","Both are null");
+            }
+
+        }
+        else {
+            Log.e("TAG","It didnt work");
         }
 
 
-        ArrayList<pay_log_struct> made_dataset=make_pay_dataset(sms_List,req_sms_add,req_sms_add_times);
-
-        // Initializing RecyclerView
-        RecyclerView pay_logs = findViewById(R.id.pay_log_rv);
-
-        // Setting up the RecyclerView with a layout manager and adapter
-        pay_logs.setLayoutManager(new LinearLayoutManager(this));
-        Pay_log_RV_Adapter prvAdapter = new Pay_log_RV_Adapter(this, made_dataset);
-        pay_logs.setAdapter(prvAdapter);
 
         // Initializing buttons
         hom_but_lp = findViewById(R.id.home_but);
@@ -73,18 +112,10 @@ public class payment_log_logic extends AppCompatActivity {
                 startActivity(lp_to_gp);
             }
         });
-
-        log_but_lp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent lp_to_lp = new Intent(payment_log_logic.this, payment_log_logic.class);
-                startActivity(lp_to_lp);
-            }
-        });
     }
 
 
-    public ArrayList<pay_log_struct> make_pay_dataset(ArrayList<Sms> req_sms_list,ArrayList<String> req_bank_list,ArrayList<ArrayList<String>> req_sms_dates){
+    public ArrayList<pay_log_struct> make_pay_dataset(ArrayList<Sms> req_sms_list,ArrayList<String> req_bank_list){
         ArrayList<pay_log_struct> pay_dataset = new ArrayList<pay_log_struct>();
         for(int k=0;k<req_sms_list.size();k++){
             double curr_val=0.00;
@@ -107,11 +138,19 @@ public class payment_log_logic extends AppCompatActivity {
             }
             if(curr_val!=0.0 & hit_bank!=null){
                 System.out.println("Both bank and value are not null/zero");
-                ArrayList<String> date = req_sms_dates.get(k);
+                long date = req_sms_list.get(k).getTime();
+
+
+                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                String formattedDate = df.format(date);
+                ArrayList<String> CDL = new ArrayList<>(Arrays.asList(formattedDate.split("-")));
+                Log.e("TAG", String.valueOf(CDL));
+                CDL.set(2, CDL.get(2).substring(2));
+                Log.e("TAG", String.valueOf(CDL));
 
                 String payee=getPayee(hit_bank,req_sms_list.get(k).getMsg());
                 System.out.println("This is the paymee: "+payee);
-                String date_combined= String.join("-",date);
+                String date_combined= String.join("-",CDL);
                 System.out.println("This is the payment date: "+date);
                 System.out.println("This is the value: "+curr_val);
 
@@ -238,7 +277,68 @@ public class payment_log_logic extends AppCompatActivity {
             } else {
                 Log.e("TAG", "Index of 'on' not found or out of bounds in SBI SMS: " + index_of_inr);
             }
-        } else {
+        } else if (Objects.equals(Bank, "AXIS")) {
+            //Getting index of INR
+            int index_of_inr= bank_msg_list.indexOf("INR");
+            if (index_of_inr==-1){
+                index_of_inr=bank_msg_list.indexOf("Rs");
+            }
+            if (index_of_inr != -1 && index_of_inr > 0 && index_of_inr < bank_msg_list.size()) {
+                String word_after_inr = bank_msg_list.get(index_of_inr + 1);
+                try {
+                    double curr_val = Double.parseDouble(word_after_inr.replace(",", ""));
+                    tot_sum += curr_val;
+                } catch (NumberFormatException e) {
+                    Log.e("TAG", "Invalid amount format in AXIS SMS: " + word_after_inr);
+                }
+                // Return total sum for AXIS and exit the method
+                return tot_sum;
+            } else {
+                Log.e("TAG", "Index of 'on' not found or out of bounds in AXIS SMS: " + index_of_inr);
+            }
+
+        } else if(Objects.equals(Bank, "SCB")){
+
+            //Getting index of INR
+            int index_of_inr= bank_msg_list.indexOf("INR");
+            if (index_of_inr==-1){
+                index_of_inr=bank_msg_list.indexOf("Rs");
+            }
+            if (index_of_inr != -1 && index_of_inr > 0 && index_of_inr < bank_msg_list.size()) {
+                String word_after_inr = bank_msg_list.get(index_of_inr + 1);
+                try {
+                    double curr_val = Double.parseDouble(word_after_inr.replace(",", ""));
+                    tot_sum += curr_val;
+                } catch (NumberFormatException e) {
+                    Log.e("TAG", "Invalid amount format in SCB SMS: " + word_after_inr);
+                }
+                // Return total sum for AXIS and exit the method
+                return tot_sum;
+            } else {
+                Log.e("TAG", "Index of 'on' not found or out of bounds in SCB SMS: " + index_of_inr);
+            }
+        } else if (Objects.equals(Bank, "HDFC")) {
+            // HDFC bank processing
+            //logic: look for "INR." or "Rs" and extract amount
+            int index_of_spent = bank_msg_list.indexOf("spent");
+            if (index_of_spent == -1) {
+                index_of_spent = bank_msg_list.indexOf("Rs.");
+            }
+            if (index_of_spent != -1 && index_of_spent + 1 < bank_msg_list.size()) {
+                String word_after_key = bank_msg_list.get(index_of_spent + 1);
+                try {
+                    double curr_val = Double.parseDouble(word_after_key.replace(",", ""));
+                    tot_sum += curr_val;
+                } catch (NumberFormatException e) {
+                    Log.e("TAG", "Invalid amount format in HDFC SMS: " + word_after_key);
+                }
+                // Return total sum for HDFC and exit the method
+                return tot_sum;
+            } else {
+                Log.e("TAG", "Index of 'INR.' or 'Rs' not found or out of bounds in HDFC SMS: " + index_of_spent);
+            }
+        }
+        else {
             // Handle unsupported banks
             Log.e("TAG", "This bank is not supported yet: " + Bank);
             Toast.makeText(this,"This bank is not supported yet: "+Bank,Toast.LENGTH_SHORT).show();
@@ -295,7 +395,47 @@ public class payment_log_logic extends AppCompatActivity {
             else{
                 payee="Unknown";
             }
-        } else{
+        } else if (Bank=="AXIS") {
+            ArrayList<String> bank_msg_list= new ArrayList<>(Arrays.asList(bank_msg.split(" ")));
+
+
+            int index_of_code= bank_msg_list.indexOf("SMS");
+
+            if(index_of_code!=-1) {
+                String payee_code = bank_msg_list.get(index_of_code);
+                ArrayList<String> payee_code_array = new ArrayList<>(Arrays.asList(payee_code.split("/")));
+                payee = payee_code_array.get(payee_code_array.size() - 1);
+            }
+            else {
+                payee="Unknown";
+            }
+
+        } else if (Bank=="SCB") {
+            ArrayList<String> bank_msg_list= new ArrayList<>(Arrays.asList(bank_msg.split(" ")));
+
+            int index_of_credited= bank_msg_list.indexOf("credited");
+
+            if(index_of_credited!=-1){
+                payee =bank_msg_list.get(index_of_credited+1);
+            }
+            else{
+                payee="Unknown";
+            }
+
+
+        } else if (Bank=="HDFC") {
+            ArrayList<String> bank_msg_list= new ArrayList<>(Arrays.asList(bank_msg.split(" ")));
+
+            int index_of_at= bank_msg_list.indexOf("at");
+
+            if(index_of_at!=-1){
+                payee =bank_msg_list.get(index_of_at+1);
+            }
+            else{
+                payee="Unknown";
+            }
+        }
+        else{
             Log.e("TAG","This bank is not supported yet :"+Bank);
 
         }

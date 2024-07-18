@@ -11,15 +11,6 @@
     >
 
 
-    <ImageView
-        android:id="@+id/app_logo_bg"
-        android:layout_width="589dp"
-        android:layout_height="516dp"
-        android:alpha="0.04"
-        app:srcCompat="@drawable/moneytracker_new"
-        tools:layout_editor_absoluteX="-117dp"
-        tools:layout_editor_absoluteY="167dp" />
-
     <TextView
         android:id="@+id/instr"
         android:layout_width="wrap_content"
@@ -160,6 +151,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instr" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gold"
+        android:text="Developed by Thoshith Kautilya"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.739"
+        android:fontFamily="sans-serif-condensed"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
