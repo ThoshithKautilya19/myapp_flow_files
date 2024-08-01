@@ -8,36 +8,24 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@color/md_theme_background"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity"
     android:padding="0dp">
 
-
-    <ImageView
-        android:id="@+id/app_icom"
-        android:layout_width="124dp"
-        android:layout_height="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.471"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/moneytracker_neww" />
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/chart_space"
         android:layout_width="251dp"
         android:layout_height="352dp"
         android:animateLayoutChanges="true"
+        android:background="@color/md_theme_background"
         android:fontFamily="sans-serif-condensed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tot_amt_disp"
-        app:layout_constraintVertical_bias="0.258" />
-
+        app:layout_constraintVertical_bias="0.29" />
 
     <TextView
         android:id="@+id/tot_amt_disp"
@@ -47,14 +35,12 @@
         android:fontFamily="sans-serif-condensed"
         android:hapticFeedbackEnabled="true"
         android:text="Amount"
-        android:textColor="@color/amt"
-
-
+        android:textColor="@color/md_theme_onBackground"
         android:textColorLink="#1C1B1B"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.678"
+        app:layout_constraintHorizontal_bias="0.785"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,19 +52,20 @@
         android:layout_marginBottom="11dp"
         android:fontFamily="sans-serif-condensed"
         android:text="Spending in this month  :"
+        android:textColor="@color/md_theme_onBackground"
         android:textSize="18dp"
         app:layout_constraintBottom_toBottomOf="@+id/tot_amt_disp"
         app:layout_constraintEnd_toStartOf="@+id/tot_amt_disp"
-        app:layout_constraintHorizontal_bias="0.34"
+        app:layout_constraintHorizontal_bias="0.537"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.607" />
+        app:layout_constraintVertical_bias="0.593" />
 
     <ImageView
         android:id="@+id/bot_nav_bg"
         android:layout_width="match_parent"
         android:layout_height="51dp"
-        android:background="@color/comp"
+        android:background="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -92,7 +79,7 @@
         android:layout_width="1dp"
         android:layout_height="51dp"
 
-        android:background="@color/black"
+        android:background="@color/md_theme_outline"
         app:layout_constraintEnd_toEndOf="@+id/bot_nav_bg"
         app:layout_constraintHorizontal_bias="0.697"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,7 +90,7 @@
         android:layout_width="1dp"
         android:layout_height="51dp"
 
-        android:background="@color/black"
+        android:background="@color/md_theme_outline"
         app:layout_constraintEnd_toEndOf="@+id/bot_nav_bg"
         app:layout_constraintHorizontal_bias="0.302"
         app:layout_constraintStart_toStartOf="parent"
@@ -113,7 +100,7 @@
         android:id="@+id/home_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
+        android:background="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +114,7 @@
         android:layout_width="58dp"
         android:layout_height="51dp"
         android:layout_marginStart="32dp"
-        android:backgroundTint="@color/comp"
+        android:background="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toStartOf="@+id/bit_nav_div1"
         app:layout_constraintHorizontal_bias="0.0"
@@ -142,18 +129,19 @@
         android:layout_height="39dp"
         android:text="TextView"
         android:textSize="20sp"
+        android:textColor="@color/md_theme_onBackground"
         app:layout_constraintBottom_toTopOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chart_space"
-        app:layout_constraintVertical_bias="0.659" />
+        app:layout_constraintVertical_bias="0.56" />
 
     <ImageButton
         android:id="@+id/log_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
+        android:background="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
@@ -169,13 +157,13 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="396dp"
-        android:backgroundTint="@color/comp"
+        android:background="?attr/colorSecondary"
+        android:src="@drawable/arrow_left_line"
         app:layout_constraintBottom_toTopOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toStartOf="@+id/chart_space"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.65"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tot_head"
-        app:srcCompat="@drawable/arrow_left_line" />
+        app:layout_constraintTop_toBottomOf="@+id/tot_head" />
 
     <ImageButton
         android:id="@+id/next_month_but"
@@ -184,13 +172,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="44dp"
         android:layout_marginBottom="392dp"
-        android:backgroundTint="@color/comp"
-
+        android:background="?attr/colorSecondary"
         app:layout_constraintBottom_toTopOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toEndOf="@+id/chart_space"
         app:layout_constraintTop_toBottomOf="@+id/tot_head"
+        app:layout_constraintVertical_bias="0.333"
         app:srcCompat="@drawable/arrow_right_line" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

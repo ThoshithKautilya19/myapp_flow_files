@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".Graph"
-    android:background="@color/black"
+    android:background="@color/md_theme_background"
     >
 
 
@@ -22,7 +22,7 @@
         android:paddingRight="10dp"
         android:text="Welcome to MoneyTracker! A basic yet essential money tracking app. Start right off by mentioning the Banks you use ! You can select multiple banks at once, the system will let you know the option you've chosen"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="@color/md_theme_onPrimaryContainer"        android:background="@color/md_theme_primaryContainer"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,9 +51,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="260dp"
-        android:backgroundTint="@color/comp"
+
+        android:background="?attr/colorPrimary"
         android:text="Start tracking"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,7 +62,7 @@
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/input_bank_name"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.951" />
 
     <ImageView
         android:id="@+id/bot_nav_bg"
@@ -71,7 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/comp">
+        android:background="?attr/colorSecondary">
 
     </ImageView>
 
@@ -80,7 +81,7 @@
         android:id="@+id/bit_nav_div1"
         android:layout_width="1dp"
         android:layout_height="51dp"
-        android:background="@color/black"
+        android:background="@color/md_theme_outline"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.663"
@@ -92,7 +93,7 @@
         android:id="@+id/bit_nav_div2"
         android:layout_width="1dp"
         android:layout_height="51dp"
-        android:background="@color/black"
+        android:background="@color/md_theme_outline"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.334"
@@ -104,7 +105,7 @@
         android:id="@+id/change_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
+        android:backgroundTint="?attr/colorSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.144"
@@ -117,8 +118,7 @@
         android:id="@+id/home_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
-        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        android:backgroundTint="?attr/colorSecondary"        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,8 +130,7 @@
         android:id="@+id/log_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
-        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
+        android:backgroundTint="?attr/colorSecondary"        app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.861"
         app:layout_constraintStart_toStartOf="parent"
@@ -146,8 +145,7 @@
         android:layout_marginTop="35dp"
         android:layout_marginBottom="412dp"
         android:spinnerMode="dropdown"
-        android:background="@color/comp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/md_theme_secondaryContainer"        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instr" />
@@ -156,8 +154,8 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/gold"
-        android:text="Developed by Thoshith Kautilya"
+        android:textColor="@color/md_theme_onSurface"
+        android:text="Developed by Sonagiri Thoshith Kautilya IITGN"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".payment_log_logic"
-    android:background="@color/black"
+    android:background="@color/md_theme_background"
     >
 
     <androidx.recyclerview.widget.RecyclerView
@@ -19,7 +19,7 @@
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
@@ -30,14 +30,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/comp"/>
+        android:background="@color/md_theme_secondary"/>
 
 
     <ImageView
         android:id="@+id/bit_nav_div1"
         android:layout_width="1dp"
         android:layout_height="51dp"
-        android:background="@color/black"
+        android:background="@color/md_theme_outline"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.319"
@@ -49,7 +49,7 @@
         android:id="@+id/bit_nav_div2"
         android:layout_width="1dp"
         android:layout_height="51dp"
-        android:background="@color/black"
+        android:background="@color/md_theme_outline"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.7"
@@ -61,7 +61,7 @@
         android:id="@+id/change_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
+        android:background="@color/md_theme_secondary"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.093"
@@ -74,7 +74,7 @@
         android:id="@+id/home_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
+        android:background="@color/md_theme_secondary"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -87,7 +87,7 @@
         android:id="@+id/log_but"
         android:layout_width="58dp"
         android:layout_height="51dp"
-        android:backgroundTint="@color/comp"
+        android:background="@color/md_theme_secondary"
         app:layout_constraintBottom_toBottomOf="@+id/bot_nav_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
@@ -104,7 +104,7 @@
         android:padding="5dp"
         android:text="Payment History"
         android:textAlignment="center"
-        android:textColor="@color/comp"
+        android:textColor="@color/md_theme_onBackground"
         android:textSize="40dp"
         app:layout_constraintBottom_toTopOf="@+id/pay_log_rv"
         app:layout_constraintEnd_toEndOf="parent"
